@@ -1,0 +1,61 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+message Bootstrap {
+  Server server = 1;
+  Data data = 2;
+  Jwt jwt = 3;
+  Log log = 4;
+  Cors cors = 5;
+  string folder = 6;
+}
+
+message Server {
+  message HTTP {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  message GRPC {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  HTTP http = 1;
+  GRPC grpc = 2;
+}
+
+message Data {
+  message Database {
+    string driver = 1;
+    string source = 2;
+  }
+  Database database = 1;
+}
+
+message Jwt {
+  string key = 1;
+}
+
+message Log {
+  string level = 1;
+  string filename = 2;
+  int32 maxSize = 3;
+  int32 maxBackups = 4;
+  int32 maxAge = 5;
+  bool compress = 6;
+  bool localTime = 7;
+}
+
+message Cors {
+  repeated string allowedOriginPatterns = 1;
+  string allowedMethods = 2;
+  string allowedHeaders = 3;
+  string exposeHeaders = 4;
+  int64 maxAge = 5;
+  bool allowCredentials = 6;
+}
