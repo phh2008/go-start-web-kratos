@@ -1,7 +1,7 @@
 package model
 
 import (
-	"com.gientech/selection/pkg/localtime"
+	"helloword/pkg/localtime"
 )
 
 type UserModel struct {

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package api.helloworld.v1;
+
+option go_package = "helloword/api/helloworld/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.helloworld.v1";
+
+message QueryPage {
+  int32 pageNo = 1;
+  int32 pageSize = 2;
+  string sort = 3;
+  string direction = 4;
+}
