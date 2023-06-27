@@ -24,8 +24,8 @@ var levelMap = map[string]zapcore.Level{
 }
 
 // NewLogger 创建 logger
-func NewLogger(config *conf.Log) *zap.Logger {
-	log = newZapLog(config)
+func NewLogger(config *conf.Bootstrap) *zap.Logger {
+	log = newZapLog(config.Log)
 	slog = log.Sugar()
 	// 替换 zap 全局 log
 	zap.ReplaceGlobals(log)

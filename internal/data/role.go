@@ -10,7 +10,7 @@ import (
 )
 
 type roleRepo struct {
-	BaseRepo[biz.RoleEntity]
+	*BaseRepo[biz.RoleEntity]
 }
 
 // NewRoleRepo 创建 dao

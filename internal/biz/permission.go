@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/casbin/casbin/v2"
 	"github.com/jinzhu/copier"
-	"helloword/internal/data"
+	"gorm.io/gorm"
 	"helloword/internal/model"
 	"helloword/internal/model/result"
 	"helloword/pkg/exception"
@@ -25,7 +25,10 @@ func (PermissionEntity) TableName() string {
 }
 
 type PermissionRepo interface {
-	data.BaseRepo[PermissionEntity]
+	GetDb(ctx context.Context) *gorm.DB
+	Transaction(c context.Context, handler func(tx context.Context) error) error
+	GetById(ctx context.Context, id int64) (PermissionEntity, error)
+
 	ListPage(ctx context.Context, req model.PermissionListReq) model.PageData[model.PermissionModel]
 	Add(ctx context.Context, permission PermissionEntity) (PermissionEntity, error)
 	Update(ctx context.Context, permission PermissionEntity) (PermissionEntity, error)

@@ -12,9 +12,9 @@ type JwtHelper struct {
 	key []byte
 }
 
-func NewJwtHelper(config *conf.Jwt) *JwtHelper {
+func NewJwtHelper(config *conf.Bootstrap) *JwtHelper {
 	return &JwtHelper{
-		key: []byte(config.Key),
+		key: []byte(config.Jwt.Key),
 	}
 }
 

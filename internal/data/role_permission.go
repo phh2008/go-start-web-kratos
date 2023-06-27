@@ -7,7 +7,7 @@ import (
 )
 
 type rolePermissionRepo struct {
-	BaseRepo[biz.RolePermissionEntity]
+	*BaseRepo[biz.RolePermissionEntity]
 }
 
 // NewRolePermissionRepo 创建 repo

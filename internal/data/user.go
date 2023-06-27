@@ -9,7 +9,7 @@ import (
 )
 
 type userRepo struct {
-	BaseRepo[biz.UserEntity]
+	*BaseRepo[biz.UserEntity]
 }
 
 // NewUserRepo 创建 userRepo

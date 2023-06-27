@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package api.helloworld.v1;
+import "google/api/annotations.proto";
+
+option go_package = "helloword/api/helloworld/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.helloworld.v1";
+
+service Role {
+  rpc ListPage (RoleListRequest) returns (RoleListReply){
+    option (google.api.http) = {
+      get: "/role/list",
+    };
+  }
+  rpc Add (RoleSaveRequest) returns (RoleReply){
+    option (google.api.http) = {
+      post: "/role/add",
+      body: "*",
+    };
+  }
+  rpc GetByCode(RoleCodeRequest) returns (RoleReply){
+    option (google.api.http) = {
+      get: "/role/code",
+    };
+  }
+  rpc AssignPermission(RoleAssignPermRequest) returns (RoleOk){
+    option (google.api.http) = {
+      post: "/role/assignPerm",
+      body: "*",
+    };
+  }
+  rpc DeleteById (RoleDeleteRequest) returns (RoleOk){
+    option (google.api.http) = {
+      post: "/role/delete",
+      body: "*",
+    };
+  }
+}
+
+message RoleListRequest {
+  int64 pageNo = 1;
+  int64 pageSize = 2;
+  string sort = 3;
+  string direction = 4;
+  string roleCode = 5;
+  string roleName = 6;
+}
+
+message RoleReply {
+  int64 id = 1;
+  string roleCode = 2;
+  string roleName = 3;
+}
+
+message RoleListReply {
+  int64 count = 1;
+  int32 page_no = 2;
+  int32 page_size = 3;
+  repeated RoleReply roleList = 4;
+}
+
+message RoleSaveRequest {
+  int64 id = 1;
+  string roleCode = 2;
+  string roleName = 3;
+}
+
+message RoleCodeRequest {
+  string roleCode = 1;
+}
+
+message RoleAssignPermRequest {
+  int64 RoleId = 1;
+  repeated int64 PermIdList = 2;
+}
+
+message RoleDeleteRequest {
+  int64 id = 1;
+}
+
+message RoleOk {
+  bool success = 1;
+}

@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package api.helloworld.v1;
+import "google/api/annotations.proto";
+
+
+option go_package = "helloword/api/helloworld/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.helloworld.v1";
+
+service Permission {
+  rpc ListPage (PermListRequest) returns (PermListReply){
+    option (google.api.http) = {
+      get: "/permission/list",
+    };
+  }
+  rpc Add (PermSaveRequest) returns (PermReply){
+    option (google.api.http) = {
+      post: "/permission/add",
+      body: "*",
+    };
+  }
+  rpc Update (PermSaveRequest) returns (PermReply){
+    option (google.api.http) = {
+      post: "/permission/update",
+      body: "*",
+    };
+  }
+}
+
+message PermListRequest {
+  int64 pageNo = 1;
+  int64 pageSize = 2;
+  string sort = 3;
+  string direction = 4;
+  string permName = 5;
+  string url = 6;
+  string action = 7;
+  int32 permType = 8;
+}
+
+message PermReply {
+  int64 id = 1;
+  string permName = 2;
+  string url = 3;
+  string action = 4;
+  int32 permType = 5;
+  int64 parentId = 6;
+}
+
+message PermListReply {
+  int64 count = 1;
+  int32 page_no = 2;
+  int32 page_size = 3;
+  repeated PermReply permList = 4;
+}
+
+message PermSaveRequest {
+  int64 id = 1;
+  string permName = 2;
+  string url = 3;
+  string action = 4;
+  int32 permType = 5;
+  int64 parentId = 6;
+}

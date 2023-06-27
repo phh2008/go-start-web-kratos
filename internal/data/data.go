@@ -23,7 +23,7 @@ type Data struct {
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger, db *gorm.DB) (*Data, func(), error) {
+func NewData(c *conf.Bootstrap, logger log.Logger, db *gorm.DB) (*Data, func(), error) {
 	cleanup := func() {
 		log.NewHelper(logger).Info("closing the data resources")
 	}

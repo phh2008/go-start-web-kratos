@@ -1,15 +1,42 @@
 syntax = "proto3";
 
 package api.helloworld.v1;
+import "google/api/annotations.proto";
 
 option go_package = "helloword/api/helloworld/v1;v1";
 option java_multiple_files = true;
 option java_package = "api.helloworld.v1";
 
 service User {
-  rpc ListPage (UserListRequest) returns (UserListReply);
-  rpc CreateByEmail (UserEmailRequest) returns (UserReply);
-  rpc LoginByEmail (UserEmailLoginRequest) returns (LoginReply);
+  rpc ListPage (UserListRequest) returns (UserListReply){
+    option (google.api.http) = {
+      get: "/user/list",
+    };
+  }
+  rpc CreateByEmail (UserEmailRequest) returns (UserReply){
+    option (google.api.http) = {
+      post: "/user/createByEmail",
+      body: "*",
+    };
+  }
+  rpc LoginByEmail (UserEmailLoginRequest) returns (LoginReply){
+    option (google.api.http) = {
+      post: "/user/login",
+      body: "*",
+    };
+  }
+  rpc AssignRole (AssignRoleRequest) returns (UserOk){
+    option (google.api.http) = {
+      post: "/user/assignRole",
+      body: "*",
+    };
+  }
+  rpc DeleteById (UserDeleteRequest) returns (UserOk){
+    option (google.api.http) = {
+      post: "/user/delete",
+      body: "*",
+    };
+  }
 }
 
 message UserListRequest {
@@ -50,4 +77,17 @@ message UserEmailLoginRequest {
 
 message LoginReply {
   string token = 1;
+}
+
+message AssignRoleRequest{
+  int64 userId = 1;
+  string roleCode = 2;
+}
+
+message UserOk {
+  bool success = 1;
+}
+
+message UserDeleteRequest {
+  int64 id = 1;
 }

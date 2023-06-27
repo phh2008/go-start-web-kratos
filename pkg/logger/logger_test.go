@@ -1,16 +1,16 @@
 package logger
 
 import (
-	"com.gientech/selection/pkg/config"
 	"fmt"
 	"go.uber.org/zap"
+	"helloword/internal/conf"
 	"testing"
 )
 
 // TestZap zap 日志框架
 func TestZap(t *testing.T) {
-	var config = config.NewConfig("../../config")
-	zapLog := newZapLog(config)
+	var config = conf.NewConfig("../../config/config.yaml")
+	zapLog := newZapLog(config.Log)
 	zapLog.Debug("debug message")
 	zapLog.Info("info message")
 	zapLog.Warn("warn message")
@@ -18,8 +18,8 @@ func TestZap(t *testing.T) {
 }
 
 func TestLogger(t *testing.T) {
-	var config = config.NewConfig("../../config")
-	NewLogger(config)
+	var config = conf.NewConfig("../../config/config.yaml")
+	NewLogger(config.Log)
 	S().Debugf("debug message")
 	S().Infof("info message")
 	S().Warnf("warn message")
@@ -29,8 +29,8 @@ func TestLogger(t *testing.T) {
 }
 
 func TestWrapLogger(t *testing.T) {
-	var config = config.NewConfig("../../config")
-	NewLogger(config)
+	var config = conf.NewConfig("../../config/config.yaml")
+	NewLogger(config.Log)
 
 	Debugf("wrap debugF message %s %s %s", "aa", "bb", "cc")
 	Infof("wrap infoF message")

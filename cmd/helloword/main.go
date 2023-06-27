@@ -7,8 +7,6 @@ import (
 	"helloword/internal/conf"
 
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/config"
-	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -27,10 +25,13 @@ var (
 	flagconf string
 
 	id, _ = os.Hostname()
+
+	active string
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf ./config")
+	flag.StringVar(&active, "active", "dev", "active environment, eg: -active dev")
 }
 
 func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
@@ -58,23 +59,11 @@ func main() {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
-	c := config.New(
-		config.WithSource(
-			file.NewSource(flagconf),
-		),
-	)
-	defer c.Close()
 
-	if err := c.Load(); err != nil {
-		panic(err)
-	}
+	var bc = conf.NewConfig(flagconf)
+	conf.Active = active
 
-	var bc conf.Bootstrap
-	if err := c.Scan(&bc); err != nil {
-		panic(err)
-	}
-
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
+	app, cleanup, err := wireApp(&bc, logger)
 	if err != nil {
 		panic(err)
 	}

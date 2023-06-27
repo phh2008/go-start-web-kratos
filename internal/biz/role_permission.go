@@ -2,7 +2,7 @@ package biz
 
 import (
 	"context"
-	"helloword/internal/data"
+	"gorm.io/gorm"
 )
 
 type RolePermissionEntity struct {
@@ -16,7 +16,10 @@ func (RolePermissionEntity) TableName() string {
 }
 
 type RolePermissionRepo interface {
-	data.BaseRepo[RolePermissionEntity]
+	GetDb(ctx context.Context) *gorm.DB
+	Transaction(c context.Context, handler func(tx context.Context) error) error
+	GetById(ctx context.Context, id int64) (RolePermissionEntity, error)
+
 	DeleteByRoleId(ctx context.Context, roleId int64) error
 	BatchAdd(ctx context.Context, list []*RolePermissionEntity) error
 	ListRoleIdByPermId(ctx context.Context, permId int64) []int64

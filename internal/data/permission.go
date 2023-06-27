@@ -9,7 +9,7 @@ import (
 )
 
 type permissionRepo struct {
-	BaseRepo[biz.PermissionEntity]
+	*BaseRepo[biz.PermissionEntity]
 }
 
 // NewPermissionRepo 创建dao

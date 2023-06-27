@@ -7,31 +7,42 @@
 package main
 
 import (
+	"github.com/go-kratos/kratos/v2"
+	"github.com/go-kratos/kratos/v2/log"
 	"helloword/internal/biz"
 	"helloword/internal/conf"
 	"helloword/internal/data"
 	"helloword/internal/server"
 	"helloword/internal/service"
+	"helloword/pkg/orm"
+	"helloword/pkg/xcasbin"
+	"helloword/pkg/xjwt"
+)
 
-	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/log"
+import (
+	_ "go.uber.org/automaxprocs"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
-	if err != nil {
-		return nil, nil, err
-	}
-	greeterRepo := data.NewGreeterRepo(dataData, logger)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
-	greeterService := service.NewGreeterService(greeterUsecase)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
+func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(), error) {
+	db := orm.NewDB(bootstrap)
+	userRepo := data.NewUserRepo(db)
+	jwtHelper := xjwt.NewJwtHelper(bootstrap)
+	enforcer := xcasbin.NewCasbin(db, bootstrap, logger)
+	userUseCase := biz.NewUserUseCase(userRepo, jwtHelper, enforcer)
+	userService := service.NewUserService(userUseCase)
+	roleRepo := data.NewRoleRepo(db)
+	rolePermissionRepo := data.NewRolePermissionRepo(db)
+	permissionRepo := data.NewPermissionRepo(db)
+	roleUseCase := biz.NewRoleUseCase(roleRepo, rolePermissionRepo, permissionRepo, enforcer, userRepo)
+	roleService := service.NewRoleService(roleUseCase)
+	permissionUseCase := biz.NewPermissionUseCase(permissionRepo, enforcer)
+	permissionService := service.NewPermissionService(permissionUseCase)
+	grpcServer := server.NewGRPCServer(bootstrap, logger, userService, roleService, permissionService)
+	httpServer := server.NewHTTPServer(bootstrap, logger, userService, roleService, permissionService)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
-		cleanup()
 	}, nil
 }

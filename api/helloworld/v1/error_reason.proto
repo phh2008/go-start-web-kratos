@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package api.helloworld.v1;
+import "errors/errors.proto";
+
+option go_package = "helloword/api/helloworld/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.helloworld.v1";
+
+
+enum ErrorReason {
+  // 设置缺省错误码
+  option (errors.default_code) = 500;
+
+  USER_NOT_FOUND = 0 [(errors.code) = 404];
+  CONTENT_MISSING = 1 [(errors.code) = 400];
+  NoLogin = 2[(errors.code) = 401];
+  Unauthorized = 3[(errors.code) = 402];
+  SignVerifyError = 4[(errors.code) = 403];
+  SysError = 5[(errors.code) = 500];
+  ParamError = 6[(errors.code) = 501];
+  DBError = 7[(errors.code) = 502];
+
+}

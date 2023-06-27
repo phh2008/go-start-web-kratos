@@ -3,37 +3,251 @@
 
 openapi: 3.0.3
 info:
-    title: Greeter API
-    description: The greeting service definition.
+    title: User API
     version: 0.0.1
 paths:
-    /helloworld/{name}:
-        get:
+    /user/assignRole:
+        post:
             tags:
-                - Greeter
-                - subgroup
-            description: Sends a greeting
-            operationId: Greeter_SayHello
-            parameters:
-                - name: name
-                  in: path
-                  required: true
-                  schema:
-                    type: string
+                - User
+            operationId: User_AssignRole
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AssignRoleRequest'
+                required: true
             responses:
                 "200":
                     description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
+                                $ref: '#/components/schemas/UserOk'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user/createByEmail:
+        post:
+            tags:
+                - User
+            operationId: User_CreateByEmail
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserEmailRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user/delete:
+        post:
+            tags:
+                - User
+            operationId: User_DeleteById
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserDeleteRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserOk'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user/list:
+        get:
+            tags:
+                - User
+            operationId: User_ListPage
+            parameters:
+                - name: pageNo
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+                - name: sort
+                  in: query
+                  schema:
+                    type: string
+                - name: direction
+                  in: query
+                  schema:
+                    type: string
+                - name: realName
+                  in: query
+                  schema:
+                    type: string
+                - name: email
+                  in: query
+                  schema:
+                    type: string
+                - name: status
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserListReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user/login:
+        post:
+            tags:
+                - User
+            operationId: User_LoginByEmail
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UserEmailLoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LoginReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
 components:
     schemas:
-        helloworld.v1.HelloReply:
+        AssignRoleRequest:
             type: object
             properties:
+                userId:
+                    type: integer
+                    format: int64
+                roleCode:
+                    type: string
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        LoginReply:
+            type: object
+            properties:
+                token:
+                    type: string
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
                 message:
                     type: string
-            description: The response message containing the greetings
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UserDeleteRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int64
+        UserEmailLoginRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+        UserEmailRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+        UserListReply:
+            type: object
+            properties:
+                count:
+                    type: integer
+                    format: int64
+                pageNo:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+                userList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/UserReply'
+        UserOk:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        UserReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int64
+                realName:
+                    type: string
+                userName:
+                    type: string
+                email:
+                    type: string
+                status:
+                    type: integer
+                    format: int32
+                roleCode:
+                    type: string
 tags:
-    - name: Greeter
+    - name: User

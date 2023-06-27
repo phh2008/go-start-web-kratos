@@ -10,8 +10,8 @@ import (
 	"helloword/pkg/util"
 )
 
-func NewDB(c *conf.Data) *gorm.DB {
-	var gdb, err = gorm.Open(mysql.Open(c.Database.Source), &gorm.Config{
+func NewDB(c *conf.Bootstrap) *gorm.DB {
+	var gdb, err = gorm.Open(mysql.Open(c.Data.Database.Source), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {

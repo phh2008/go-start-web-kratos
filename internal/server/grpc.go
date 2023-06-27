@@ -4,11 +4,20 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	v1 "helloword/api/helloworld/v1"
 	"helloword/internal/conf"
+	"helloword/internal/service"
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, logger log.Logger) *grpc.Server {
+func NewGRPCServer(
+	cf *conf.Bootstrap,
+	logger log.Logger,
+	userService *service.UserService,
+	roleService *service.RoleService,
+	permissionService *service.PermissionService,
+) *grpc.Server {
+	c := cf.Server
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -24,5 +33,8 @@ func NewGRPCServer(c *conf.Server, logger log.Logger) *grpc.Server {
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
+	v1.RegisterUserServer(srv, userService)
+	v1.RegisterRoleServer(srv, roleService)
+	v1.RegisterPermissionServer(srv, permissionService)
 	return srv
 }
