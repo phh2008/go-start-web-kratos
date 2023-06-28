@@ -7,9 +7,9 @@ import (
 
 	"helloword/internal/conf"
 
+	kratoszap "github.com/go-kratos/kratos/contrib/log/zap/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 
@@ -35,7 +35,17 @@ func init() {
 	flag.StringVar(&active, "active", "dev", "active environment, eg: -active dev")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server, zapLog *zap.Logger) *kratos.App {
+func newApp(gs *grpc.Server, hs *http.Server, zapLog *zap.Logger) *kratos.App {
+	// 包装 zap logger
+	zlog := kratoszap.NewLogger(zapLog.WithOptions(zap.AddCallerSkip(3)))
+	// 添加 traceId 等字段
+	logger := log.With(zlog)//
+	//"service.name", Name,
+	//"service.version", Version,
+	//"trace.id", tracing.TraceID(),
+	//"span.id", tracing.SpanID(),
+
+	log.SetLogger(logger)
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -51,20 +61,9 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server, zapLog *zap.Log
 
 func main() {
 	flag.Parse()
-	logger := log.With(log.NewStdLogger(os.Stdout),
-		"ts", log.DefaultTimestamp,
-		"caller", log.DefaultCaller,
-		"service.id", id,
-		"service.name", Name,
-		"service.version", Version,
-		"trace.id", tracing.TraceID(),
-		"span.id", tracing.SpanID(),
-	)
-
 	var bc = conf.NewConfig(flagconf)
 	conf.Active = active
-
-	app, cleanup, err := wireApp(&bc, logger)
+	app, cleanup, err := wireApp(&bc)
 	if err != nil {
 		panic(err)
 	}

@@ -8,7 +8,6 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/log"
 	"helloword/internal/biz"
 	"helloword/internal/conf"
 	"helloword/internal/data"
@@ -27,10 +26,10 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(bootstrap *conf.Bootstrap, logLogger log.Logger) (*kratos.App, func(), error) {
+func wireApp(bootstrap *conf.Bootstrap) (*kratos.App, func(), error) {
 	jwtHelper := xjwt.NewJwtHelper(bootstrap)
 	db := orm.NewDB(bootstrap)
-	enforcer := xcasbin.NewCasbin(db, bootstrap, logLogger)
+	enforcer := xcasbin.NewCasbin(db, bootstrap)
 	userRepo := data.NewUserRepo(db)
 	userUseCase := biz.NewUserUseCase(userRepo, jwtHelper, enforcer)
 	userService := service.NewUserService(userUseCase)
@@ -44,7 +43,7 @@ func wireApp(bootstrap *conf.Bootstrap, logLogger log.Logger) (*kratos.App, func
 	grpcServer := server.NewGRPCServer(bootstrap, jwtHelper, enforcer, userService, roleService, permissionService)
 	httpServer := server.NewHTTPServer(bootstrap, jwtHelper, enforcer, userService, roleService, permissionService)
 	zapLogger := logger.NewLogger(bootstrap)
-	app := newApp(logLogger, grpcServer, httpServer, zapLogger)
+	app := newApp(grpcServer, httpServer, zapLogger)
 	return app, func() {
 	}, nil
 }
