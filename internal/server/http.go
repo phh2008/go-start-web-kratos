@@ -1,18 +1,24 @@
 package server
 
 import (
-	"github.com/go-kratos/kratos/v2/log"
+	"context"
+	"github.com/casbin/casbin/v2"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	v1 "helloword/api/helloworld/v1"
 	"helloword/internal/conf"
+	"helloword/internal/middleware"
 	"helloword/internal/service"
+	"helloword/pkg/logger"
+	"helloword/pkg/xjwt"
 )
 
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(
 	cf *conf.Bootstrap,
-	logger log.Logger,
+	jwt *xjwt.JwtHelper,
+	enforcer *casbin.Enforcer,
 	userService *service.UserService,
 	roleService *service.RoleService,
 	permissionService *service.PermissionService,
@@ -21,6 +27,16 @@ func NewHTTPServer(
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
+			selector.Server(middleware.NewAuthenticate(jwt),
+				middleware.NewAuthorization(enforcer)).
+				Match(func(ctx context.Context, operation string) bool {
+					logger.Infof("operation: %s", operation)
+					if middleware.NoneAuthOperation.Contains(operation) {
+						return false
+					}
+					return true
+				}).
+				Build(),
 		),
 	}
 	if c.Http.Network != "" {

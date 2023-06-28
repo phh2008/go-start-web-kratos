@@ -21,7 +21,7 @@ func NewPermissionRepo(db *gorm.DB) biz.PermissionRepo {
 
 func (a *permissionRepo) ListPage(ctx context.Context, req model.PermissionListReq) model.PageData[model.PermissionModel] {
 	db := a.GetDb(ctx)
-	db = db.Model(&biz.UserEntity{})
+	db = db.Model(&biz.PermissionEntity{})
 	if req.PermName != "" {
 		db = db.Where("perm_name like ?", "%"+req.PermName+"%")
 	}

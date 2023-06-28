@@ -14,6 +14,7 @@ import (
 	"helloword/internal/data"
 	"helloword/internal/server"
 	"helloword/internal/service"
+	"helloword/pkg/logger"
 	"helloword/pkg/orm"
 	"helloword/pkg/xcasbin"
 	"helloword/pkg/xjwt"
@@ -26,11 +27,11 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(), error) {
-	db := orm.NewDB(bootstrap)
-	userRepo := data.NewUserRepo(db)
+func wireApp(bootstrap *conf.Bootstrap, logLogger log.Logger) (*kratos.App, func(), error) {
 	jwtHelper := xjwt.NewJwtHelper(bootstrap)
-	enforcer := xcasbin.NewCasbin(db, bootstrap, logger)
+	db := orm.NewDB(bootstrap)
+	enforcer := xcasbin.NewCasbin(db, bootstrap, logLogger)
+	userRepo := data.NewUserRepo(db)
 	userUseCase := biz.NewUserUseCase(userRepo, jwtHelper, enforcer)
 	userService := service.NewUserService(userUseCase)
 	roleRepo := data.NewRoleRepo(db)
@@ -40,9 +41,10 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	roleService := service.NewRoleService(roleUseCase)
 	permissionUseCase := biz.NewPermissionUseCase(permissionRepo, enforcer)
 	permissionService := service.NewPermissionService(permissionUseCase)
-	grpcServer := server.NewGRPCServer(bootstrap, logger, userService, roleService, permissionService)
-	httpServer := server.NewHTTPServer(bootstrap, logger, userService, roleService, permissionService)
-	app := newApp(logger, grpcServer, httpServer)
+	grpcServer := server.NewGRPCServer(bootstrap, jwtHelper, enforcer, userService, roleService, permissionService)
+	httpServer := server.NewHTTPServer(bootstrap, jwtHelper, enforcer, userService, roleService, permissionService)
+	zapLogger := logger.NewLogger(bootstrap)
+	app := newApp(logLogger, grpcServer, httpServer, zapLogger)
 	return app, func() {
 	}, nil
 }

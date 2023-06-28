@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"go.uber.org/zap"
 	"os"
 
 	"helloword/internal/conf"
@@ -30,11 +31,11 @@ var (
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf ./config")
+	flag.StringVar(&flagconf, "conf", "./configs", "config path, eg: -conf ./config")
 	flag.StringVar(&active, "active", "dev", "active environment, eg: -active dev")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
+func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server, zapLog *zap.Logger) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),

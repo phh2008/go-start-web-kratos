@@ -1,0 +1,34 @@
+server:
+  http:
+    addr: 0.0.0.0:8000
+    timeout: 1s
+  grpc:
+    addr: 0.0.0.0:9000
+    timeout: 1s
+# jwt
+jwt:
+  key: abc123
+# 数据库
+data:
+  database:
+    driver: mysql
+    source: root:root@tcp(127.0.0.1:3306)/selection?charset=utf8mb4&parseTime=True&loc=Local
+# 日志配置
+log:
+  level: debug
+  filename: ./error.log
+  maxSize: 50 #mb
+  maxBackups: 100 #保留旧日志文件数量
+  maxAge: 30 #日志保留时间（天）
+  compress: true
+  localTime: true
+# 跨域配置
+cors:
+  allowedOriginPatterns:
+    - https://127.0.0.1:18089
+    - http://localhost:18089
+  allowedMethods: GET,POST,OPTIONS,PUT,DELETE
+  allowedHeaders: Content-Type, Authorization
+  exposeHeaders: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, New-Token, New-Expires-At
+  maxAge: 3600
+  allowCredentials: false
