@@ -46,3 +46,28 @@ func (a *BaseRepo[T]) GetById(ctx context.Context, id int64) (T, error) {
 	err := a.GetDb(ctx).Limit(1).Find(&domain, id).Error
 	return domain, err
 }
+
+// Insert 新增
+func (a *BaseRepo[T]) Insert(ctx context.Context, entity T) (T, error) {
+	ret := a.GetDb(ctx).Create(&entity)
+	return entity, ret.Error
+}
+
+// Update 更新
+func (a *BaseRepo[T]) Update(ctx context.Context, entity T) (T, error) {
+	db := a.GetDb(ctx).Model(&entity).Updates(entity)
+	return entity, db.Error
+}
+
+// DeleteById 根据ID删除
+func (a *BaseRepo[T]) DeleteById(ctx context.Context, id int64) error {
+	db := a.GetDb(ctx).Delete(new(T), id)
+	return db.Error
+}
+
+// ListByIds 根据ID集合查询
+func (a *BaseRepo[T]) ListByIds(ctx context.Context, ids []int64) ([]T, error) {
+	var list []T
+	db := a.GetDb(ctx).Find(&list, ids)
+	return list, db.Error
+}
