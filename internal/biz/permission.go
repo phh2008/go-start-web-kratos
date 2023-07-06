@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/casbin/casbin/v2"
 	"github.com/jinzhu/copier"
-	"gorm.io/gorm"
 	"helloword/internal/model"
 	"helloword/internal/model/result"
 	"helloword/pkg/exception"
@@ -25,9 +24,7 @@ func (PermissionEntity) TableName() string {
 }
 
 type PermissionRepo interface {
-	GetDb(ctx context.Context) *gorm.DB
-	Transaction(c context.Context, handler func(tx context.Context) error) error
-	GetById(ctx context.Context, id int64) (PermissionEntity, error)
+	IBaseRepo[PermissionEntity]
 
 	ListPage(ctx context.Context, req model.PermissionListReq) model.PageData[model.PermissionModel]
 	Add(ctx context.Context, permission PermissionEntity) (PermissionEntity, error)

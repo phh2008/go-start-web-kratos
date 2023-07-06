@@ -58,8 +58,8 @@ func (a *roleRepo) DeleteById(ctx context.Context, id int64) error {
 }
 
 // ListByIds 根据角色ID集合查询角色列表
-func (a *roleRepo) ListByIds(ctx context.Context, ids []int64) []biz.RoleEntity {
+func (a *roleRepo) ListByIds(ctx context.Context, ids []int64) ([]biz.RoleEntity, error) {
 	var list []biz.RoleEntity
-	a.GetDb(ctx).Find(&list, ids)
-	return list
+	db := a.GetDb(ctx).Find(&list, ids)
+	return list, db.Error
 }

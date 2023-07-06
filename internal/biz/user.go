@@ -6,7 +6,6 @@ import (
 	"github.com/cristalhq/jwt/v5"
 	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"helloword/internal/model"
 	"helloword/internal/model/result"
 	"helloword/pkg/exception"
@@ -31,9 +30,7 @@ func (UserEntity) TableName() string {
 }
 
 type UserRepo interface {
-	GetDb(ctx context.Context) *gorm.DB
-	Transaction(c context.Context, handler func(tx context.Context) error) error
-	GetById(ctx context.Context, id int64) (UserEntity, error)
+	IBaseRepo[UserEntity]
 
 	ListPage(ctx context.Context, req model.UserListReq) model.PageData[model.UserModel]
 	// GetByEmail 根据 email 查询

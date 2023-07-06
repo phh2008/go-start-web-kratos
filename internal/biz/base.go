@@ -1,6 +1,7 @@
 package biz
 
 import (
+	"context"
 	"gorm.io/gorm"
 	"gorm.io/plugin/soft_delete"
 	"helloword/pkg/common"
@@ -12,6 +13,29 @@ import (
 func init() {
 	soft_delete.FlagDeleted = 2
 	soft_delete.FlagActived = 1
+}
+
+type IBaseRepo[T any] interface {
+	// Transaction 开启事务
+	Transaction(c context.Context, handler func(tx context.Context) error) error
+
+	// GetDb 获取事务的db连接
+	GetDb(ctx context.Context) *gorm.DB
+
+	// GetById 根据ID查询
+	GetById(ctx context.Context, id int64) (T, error)
+
+	// Insert 新增
+	Insert(ctx context.Context, entity T) (T, error)
+
+	// Update 更新
+	Update(ctx context.Context, entity T) (T, error)
+
+	// DeleteById 根据ID删除
+	DeleteById(ctx context.Context, id int64) error
+
+	// ListByIds 根据ID集合查询
+	ListByIds(ctx context.Context, ids []int64) ([]T, error)
 }
 
 type BaseEntity struct {

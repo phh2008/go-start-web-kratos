@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/casbin/casbin/v2"
 	"github.com/jinzhu/copier"
-	"gorm.io/gorm"
 	"helloword/internal/model"
 	"helloword/internal/model/result"
 	"helloword/pkg/exception"
@@ -23,9 +22,7 @@ func (RoleEntity) TableName() string {
 }
 
 type RoleRepo interface {
-	GetDb(ctx context.Context) *gorm.DB
-	Transaction(c context.Context, handler func(tx context.Context) error) error
-	GetById(ctx context.Context, id int64) (RoleEntity, error)
+	IBaseRepo[RoleEntity]
 
 	ListPage(ctx context.Context, req model.RoleListReq) model.PageData[model.RoleModel]
 	// Add 添加角色
@@ -34,8 +31,6 @@ type RoleRepo interface {
 	GetByCode(ctx context.Context, code string) RoleEntity
 	// DeleteById 删除角色
 	DeleteById(ctx context.Context, id int64) error
-	// ListByIds 根据角色ID集合查询角色列表
-	ListByIds(ctx context.Context, ids []int64) []RoleEntity
 }
 
 type RoleUseCase struct {
