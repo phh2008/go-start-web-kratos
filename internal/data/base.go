@@ -3,15 +3,12 @@ package data
 import (
 	"context"
 	"gorm.io/gorm"
+	"helloword/internal/biz"
 )
 
-var dbKey = "txDb"
+var _ = biz.IBaseRepo[any](new(BaseRepo[any]))
 
-//type BaseRepo[T any] interface {
-//	GetDb(ctx context.Context) *gorm.DB
-//	Transaction(c context.Context, handler func(tx context.Context) error) error
-//	GetById(ctx context.Context, id int64) (T, error)
-//}
+var dbKey = "txDb"
 
 type BaseRepo[T any] struct {
 	db *gorm.DB
