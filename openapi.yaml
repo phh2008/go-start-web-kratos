@@ -3,19 +3,19 @@
 
 openapi: 3.0.3
 info:
-    title: User API
+    title: ""
     version: 0.0.1
 paths:
-    /user/assignRole:
+    /permission/add:
         post:
             tags:
-                - User
-            operationId: User_AssignRole
+                - Permission
+            operationId: Permission_Add
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/AssignRoleRequest'
+                            $ref: '#/components/schemas/api.helloworld.v1.PermSaveRequest'
                 required: true
             responses:
                 "200":
@@ -23,66 +23,12 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UserOk'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /user/createByEmail:
-        post:
-            tags:
-                - User
-            operationId: User_CreateByEmail
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/UserEmailRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/UserReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /user/delete:
-        post:
-            tags:
-                - User
-            operationId: User_DeleteById
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/UserDeleteRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/UserOk'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /user/list:
+                                $ref: '#/components/schemas/api.helloworld.v1.PermReply'
+    /permission/list:
         get:
             tags:
-                - User
-            operationId: User_ListPage
+                - Permission
+            operationId: Permission_ListPage
             parameters:
                 - name: pageNo
                   in: query
@@ -102,15 +48,19 @@ paths:
                   in: query
                   schema:
                     type: string
-                - name: realName
+                - name: permName
                   in: query
                   schema:
                     type: string
-                - name: email
+                - name: url
                   in: query
                   schema:
                     type: string
-                - name: status
+                - name: action
+                  in: query
+                  schema:
+                    type: string
+                - name: permType
                   in: query
                   schema:
                     type: integer
@@ -121,23 +71,17 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UserListReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /user/login:
+                                $ref: '#/components/schemas/api.helloworld.v1.PermListReply'
+    /permission/update:
         post:
             tags:
-                - User
-            operationId: User_LoginByEmail
+                - Permission
+            operationId: Permission_Update
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/UserEmailLoginRequest'
+                            $ref: '#/components/schemas/api.helloworld.v1.PermSaveRequest'
                 required: true
             responses:
                 "200":
@@ -145,73 +89,266 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LoginReply'
-                default:
-                    description: Default error response
+                                $ref: '#/components/schemas/api.helloworld.v1.PermReply'
+    /role/add:
+        post:
+            tags:
+                - Role
+            operationId: Role_Add
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.helloworld.v1.RoleSaveRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Status'
+                                $ref: '#/components/schemas/api.helloworld.v1.RoleReply'
+    /role/assignPerm:
+        post:
+            tags:
+                - Role
+            operationId: Role_AssignPermission
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.helloworld.v1.RoleAssignPermRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.helloworld.v1.RoleOk'
+    /role/code:
+        get:
+            tags:
+                - Role
+            operationId: Role_GetByCode
+            parameters:
+                - name: roleCode
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.helloworld.v1.RoleReply'
+    /role/delete:
+        post:
+            tags:
+                - Role
+            operationId: Role_DeleteById
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.helloworld.v1.RoleDeleteRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.helloworld.v1.RoleOk'
+    /role/list:
+        get:
+            tags:
+                - Role
+            operationId: Role_ListPage
+            parameters:
+                - name: pageNo
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int64
+                - name: sort
+                  in: query
+                  schema:
+                    type: string
+                - name: direction
+                  in: query
+                  schema:
+                    type: string
+                - name: roleCode
+                  in: query
+                  schema:
+                    type: string
+                - name: roleName
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.helloworld.v1.RoleListReply'
+    /user/assignRole:
+        post:
+            tags:
+                - User
+            description: 分配角色
+            operationId: User_AssignRole
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.helloworld.v1.AssignRoleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.helloworld.v1.UserOk'
+    /user/createByEmail:
+        post:
+            tags:
+                - User
+            description: 邮箱注册
+            operationId: User_CreateByEmail
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.helloworld.v1.UserEmailRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.helloworld.v1.UserReply'
+    /user/delete:
+        post:
+            tags:
+                - User
+            description: 删除用户
+            operationId: User_DeleteById
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.helloworld.v1.UserDeleteRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.helloworld.v1.UserOk'
+    /user/list:
+        get:
+            tags:
+                - User
+            description: 用户例表
+            operationId: User_ListPage
+            parameters:
+                - name: pageNo
+                  in: query
+                  description: 当前页数
+                  schema:
+                    type: integer
+                    format: int64
+                - name: pageSize
+                  in: query
+                  description: 每页数量
+                  schema:
+                    type: integer
+                    format: int64
+                - name: sort
+                  in: query
+                  description: 排序字段
+                  schema:
+                    type: string
+                - name: direction
+                  in: query
+                  description: 排序类型：asc、desc
+                  schema:
+                    type: string
+                - name: realName
+                  in: query
+                  description: 姓名
+                  schema:
+                    type: string
+                - name: email
+                  in: query
+                  description: 邮箱
+                  schema:
+                    type: string
+                - name: status
+                  in: query
+                  description: 状态
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.helloworld.v1.UserListReply'
+    /user/login:
+        post:
+            tags:
+                - User
+            description: 邮箱登录
+            operationId: User_LoginByEmail
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.helloworld.v1.UserEmailLoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.helloworld.v1.LoginReply'
 components:
     schemas:
-        AssignRoleRequest:
+        api.helloworld.v1.AssignRoleRequest:
             type: object
             properties:
                 userId:
                     type: integer
+                    description: 用户ID
                     format: int64
                 roleCode:
                     type: string
-        GoogleProtobufAny:
-            type: object
-            properties:
-                '@type':
-                    type: string
-                    description: The type of the serialized message.
-            additionalProperties: true
-            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        LoginReply:
+                    description: 角色编号
+            description: 分配角色
+        api.helloworld.v1.LoginReply:
             type: object
             properties:
                 token:
                     type: string
-        Status:
-            type: object
-            properties:
-                code:
-                    type: integer
-                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
-                    format: int32
-                message:
-                    type: string
-                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
-                details:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/GoogleProtobufAny'
-                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
-            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
-        UserDeleteRequest:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: int64
-        UserEmailLoginRequest:
-            type: object
-            properties:
-                email:
-                    type: string
-                password:
-                    type: string
-        UserEmailRequest:
-            type: object
-            properties:
-                email:
-                    type: string
-                password:
-                    type: string
-        UserListReply:
+                    description: token
+            description: 登录响应
+        api.helloworld.v1.PermListReply:
             type: object
             properties:
                 count:
@@ -223,31 +360,182 @@ components:
                 pageSize:
                     type: integer
                     format: int32
-                userList:
+                permList:
                     type: array
                     items:
-                        $ref: '#/components/schemas/UserReply'
-        UserOk:
-            type: object
-            properties:
-                success:
-                    type: boolean
-        UserReply:
+                        $ref: '#/components/schemas/api.helloworld.v1.PermReply'
+        api.helloworld.v1.PermReply:
             type: object
             properties:
                 id:
                     type: integer
                     format: int64
-                realName:
+                permName:
                     type: string
-                userName:
+                url:
                     type: string
+                action:
+                    type: string
+                permType:
+                    type: integer
+                    format: int32
+                parentId:
+                    type: integer
+                    format: int64
+        api.helloworld.v1.PermSaveRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int64
+                permName:
+                    type: string
+                url:
+                    type: string
+                action:
+                    type: string
+                permType:
+                    type: integer
+                    format: int32
+                parentId:
+                    type: integer
+                    format: int64
+        api.helloworld.v1.RoleAssignPermRequest:
+            type: object
+            properties:
+                RoleId:
+                    type: integer
+                    format: int64
+                PermIdList:
+                    type: array
+                    items:
+                        type: integer
+                        format: int64
+        api.helloworld.v1.RoleDeleteRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int64
+        api.helloworld.v1.RoleListReply:
+            type: object
+            properties:
+                count:
+                    type: integer
+                    format: int64
+                pageNo:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+                roleList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.helloworld.v1.RoleReply'
+        api.helloworld.v1.RoleOk:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        api.helloworld.v1.RoleReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int64
+                roleCode:
+                    type: string
+                roleName:
+                    type: string
+        api.helloworld.v1.RoleSaveRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int64
+                roleCode:
+                    type: string
+                roleName:
+                    type: string
+        api.helloworld.v1.UserDeleteRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: int64
+        api.helloworld.v1.UserEmailLoginRequest:
+            type: object
+            properties:
                 email:
                     type: string
+                    description: 邮箱
+                password:
+                    type: string
+                    description: 密码
+            description: 邮箱登录
+        api.helloworld.v1.UserEmailRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+                    description: 邮箱
+                password:
+                    type: string
+                    description: 密码
+            description: 用户邮箱信息
+        api.helloworld.v1.UserListReply:
+            type: object
+            properties:
+                count:
+                    type: integer
+                    description: 总数量
+                    format: int64
+                pageNo:
+                    type: integer
+                    description: 当前页
+                    format: int32
+                pageSize:
+                    type: integer
+                    description: 每页数
+                    format: int32
+                userList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.helloworld.v1.UserReply'
+                    description: 用户例表
+            description: 用户列表
+        api.helloworld.v1.UserOk:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        api.helloworld.v1.UserReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 用户ID
+                    format: int64
+                realName:
+                    type: string
+                    description: 姓名
+                userName:
+                    type: string
+                    description: 用户名
+                email:
+                    type: string
+                    description: 邮箱
                 status:
                     type: integer
+                    description: 状态
                     format: int32
                 roleCode:
                     type: string
+                    description: 角色
+            description: 用户信息
 tags:
+    - name: Permission
+    - name: Role
     - name: User
+      description: 用户管理

@@ -7,30 +7,36 @@ option go_package = "helloword/api/helloworld/v1;v1";
 option java_multiple_files = true;
 option java_package = "api.helloworld.v1";
 
+// 用户管理
 service User {
+  // 用户例表
   rpc ListPage (UserListRequest) returns (UserListReply){
     option (google.api.http) = {
       get: "/user/list",
     };
   }
+  // 邮箱注册
   rpc CreateByEmail (UserEmailRequest) returns (UserReply){
     option (google.api.http) = {
       post: "/user/createByEmail",
       body: "*",
     };
   }
+  // 邮箱登录
   rpc LoginByEmail (UserEmailLoginRequest) returns (LoginReply){
     option (google.api.http) = {
       post: "/user/login",
       body: "*",
     };
   }
+  // 分配角色
   rpc AssignRole (AssignRoleRequest) returns (UserOk){
     option (google.api.http) = {
       post: "/user/assignRole",
       body: "*",
     };
   }
+  // 删除用户
   rpc DeleteById (UserDeleteRequest) returns (UserOk){
     option (google.api.http) = {
       post: "/user/delete",
@@ -39,48 +45,79 @@ service User {
   }
 }
 
+// 用户列表查询条件
 message UserListRequest {
-  int64 pageNo = 1;
+  // 当前页数
+  int64 pageNo = 1 [json_name = "pageNo"];
+  // 每页数量
   int64 pageSize = 2;
+  // 排序字段
   string sort = 3;
+  // 排序类型：asc、desc
   string direction = 4;
+  // 姓名
   string realName = 5;
+  // 邮箱
   string email = 6;
+  // 状态
   int32 status = 7;
 }
 
+// 用户信息
 message UserReply {
+  // 用户ID
   int64 id = 1;
+  // 姓名
   string realName = 2;
+  // 用户名
   string userName = 3;
+  // 邮箱
   string email = 4;
+  // 状态
   int32 status = 5;
+  // 角色
   string roleCode = 6;
 }
 
+// 用户列表
 message UserListReply {
+  // 总数量
   int64 count = 1;
+  // 当前页
   int32 page_no = 2;
+  // 每页数
   int32 page_size = 3;
+  // 用户例表
   repeated UserReply userList = 4;
 }
 
+// 用户邮箱信息
 message UserEmailRequest {
+  // 邮箱
   string email = 1;
+  // 密码
   string password = 2;
 }
 
+// 邮箱登录
 message UserEmailLoginRequest {
+  // 邮箱
   string email = 1;
+  // 密码
   string password = 2;
 }
 
+// 登录响应
 message LoginReply {
+  // token
   string token = 1;
 }
 
+// 分配角色
 message AssignRoleRequest{
+  // 用户ID
   int64 userId = 1;
+  // 角色编号
   string roleCode = 2;
 }
 
