@@ -5,6 +5,7 @@ import (
 	"github.com/casbin/casbin/v2"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
+	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	v1 "helloword/api/helloworld/v1"
 	"helloword/internal/conf"
@@ -22,11 +23,13 @@ func NewHTTPServer(
 	userService *service.UserService,
 	roleService *service.RoleService,
 	permissionService *service.PermissionService,
+	helloServer *service.HelloService,
 ) *http.Server {
 	c := cf.Server
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
+			validate.Validator(),
 			selector.Server(middleware.NewAuthenticate(jwt),
 				middleware.NewAuthorization(enforcer)).
 				Match(func(ctx context.Context, operation string) bool {
@@ -53,5 +56,6 @@ func NewHTTPServer(
 	v1.RegisterUserHTTPServer(srv, userService)
 	v1.RegisterRoleHTTPServer(srv, roleService)
 	v1.RegisterPermissionHTTPServer(srv, permissionService)
+	v1.RegisterHelloHTTPServer(srv, helloServer)
 	return srv
 }

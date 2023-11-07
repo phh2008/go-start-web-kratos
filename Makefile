@@ -44,6 +44,10 @@ api:
 	       --openapi_out=fq_schema_naming=true,default_response=false:. \
 	       $(API_PROTO_FILES)
 
+# 生成 api proto，加上了校验处理，这里测试 hello.proto文件
+api2:
+    protoc --proto_path=./api --proto_path=./third_party --go_out=paths=source_relative:./api --go-http_out=paths=source_relative:./api --go-grpc_out=paths=source_relative:./api --validate_out=paths=source_relative,lang=go:./api --openapi_out=fq_schema_naming=true,default_response=false:. .\api\helloworld\v1\hello.proto
+
 .PHONY: build
 # build
 build:

@@ -15,7 +15,10 @@ import (
 	"time"
 )
 
-var NoneAuthOperation = mapset.NewSet[string]("/api.helloworld.v1.User/LoginByEmail")
+var NoneAuthOperation = mapset.NewSet[string](
+	v1.User_LoginByEmail_FullMethodName,
+	v1.Hello_HelloTest_FullMethodName,
+)
 
 // NewAuthenticate 认证校验
 func NewAuthenticate(jwt *xjwt.JwtHelper) middleware.Middleware {

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package api.helloworld.v1;
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+
+option go_package = "helloword/api/helloworld/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.helloworld.v1";
+
+// Hello 服务
+service Hello {
+  // 测试
+  rpc HelloTest (HelloRequest) returns (HelloReply){
+    option (google.api.http) = {
+      get: "/hello/test",
+    };
+  }
+}
+
+// 测试请求参数
+message HelloRequest {
+//  string name = 1 [(buf.validate.field).cel = {
+//    id: "valid.email",
+//    message: "name必需是一个正确的邮箱地址",
+//    expression: "this.isEmail()"
+//  }];
+
+  string name = 1 [(validate.rules).string.email =true];
+}
+
+// 测试响应参数
+message HelloReply {
+  google.protobuf.Timestamp date = 1;
+}

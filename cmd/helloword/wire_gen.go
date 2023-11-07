@@ -41,7 +41,8 @@ func wireApp(bootstrap *conf.Bootstrap) (*kratos.App, func(), error) {
 	permissionUseCase := biz.NewPermissionUseCase(permissionRepo, enforcer)
 	permissionService := service.NewPermissionService(permissionUseCase)
 	grpcServer := server.NewGRPCServer(bootstrap, jwtHelper, enforcer, userService, roleService, permissionService)
-	httpServer := server.NewHTTPServer(bootstrap, jwtHelper, enforcer, userService, roleService, permissionService)
+	helloService := service.NewHelloService()
+	httpServer := server.NewHTTPServer(bootstrap, jwtHelper, enforcer, userService, roleService, permissionService, helloService)
 	zapLogger := logger.NewLogger(bootstrap)
 	app := newApp(grpcServer, httpServer, zapLogger)
 	return app, func() {
