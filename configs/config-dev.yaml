@@ -25,9 +25,9 @@ log:
 # 跨域配置
 cors:
   allowedOriginPatterns:
-    - https://127.0.0.1:18089
-    - http://localhost:18089
-  allowedMethods: GET,POST,OPTIONS,PUT,DELETE
+    - https://127.0.0.1:8000
+    - http://localhost:8000
+  allowedMethods: GET,POST,PUT,DELETE
   allowedHeaders: Content-Type, Authorization
   exposeHeaders: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, New-Token, New-Expires-At
   maxAge: 3600
