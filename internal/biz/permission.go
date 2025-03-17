@@ -77,7 +77,7 @@ func (a *PermissionUseCase) Update(ctx context.Context, perm model.PermissionMod
 		return result.Failure[*PermissionEntity]("更新权限资源失败")
 	}
 	// 获取角色与资源列表,比如：[[systemAdmin /api/v1/user/list get] [guest /api/v1/user/list get]]
-	perms := a.enforcer.GetFilteredPolicy(1, oldPerm.Url, oldPerm.Action)
+    perms, _ := a.enforcer.GetFilteredPolicy(1, oldPerm.Url, oldPerm.Action)
 	// 更新casbin中的数据
 	if len(perms) > 0 {
 		for i, v := range perms {
