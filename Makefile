@@ -8,7 +8,7 @@ ifeq ($(GOHOSTOS), windows)
 	#changed to use git-bash.exe to run find cli or other cli friendly, caused of every developer has a Git.
 	#Git_Bash= $(subst cmd\,bin\bash.exe,$(dir $(shell where git)))
 	#Git_Bash=$(subst \,/,$(subst cmd\,bin\bash.exe,$(dir $(shell where git))))
-	Git_Bash=$(subst \,/,$(subst cmd\git.exe,bin\bash.exe,"$(shell where git | head -n 1)"))
+	Git_Bash=$(subst \,/,$(subst cmd\git.exe,bin\bash.exe,"$(shell where git)"))
 	INTERNAL_PROTO_FILES=$(shell $(Git_Bash) -c "find internal -name *.proto")
 	API_PROTO_FILES=$(shell $(Git_Bash) -c "find api -name *.proto")
 else

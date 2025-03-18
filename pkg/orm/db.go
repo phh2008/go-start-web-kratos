@@ -67,6 +67,6 @@ func QueryPageData[T any](db *gorm.DB, pageNo, pageSize int) (model.PageData[T],
 	pageData.PageNo = pageNo
 	pageData.PageSize = pageSize
 	offset := (pageNo - 1) * pageSize
-	newDb := db.Count(&pageData.Count).Offset(offset).Limit(pageSize).Find(&pageData.Data)
+	newDb := db.Count(&pageData.Count).Offset(offset).Limit(pageSize).Scan(&pageData.Data)
 	return pageData, newDb
 }

@@ -39,7 +39,8 @@ func NewHTTPServer(
 					if middleware.NoneAuthOperation.Contains(operation) {
 						return false
 					}
-					return true
+                    // TODO 测试，放行所有API
+					return false
 				}).
 				Build(),
 		),
